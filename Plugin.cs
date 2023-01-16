@@ -25,7 +25,7 @@ namespace LogRngCalls
         ** ImportantRandomStart
         ** ImportantRandomEnd
         ** ImportantRandomValue
-        ** ImportantrandomElement
+        ** ImportantRandomElement
 
         * EchoDog.Utilities
         ** PushRandomState

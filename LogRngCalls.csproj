@@ -15,6 +15,16 @@
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.2.21" IncludeAssets="compile" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      TODO: get signs added to the bepinex gamelib repo:
+        https://github.com/BepInEx/BepInEx.NuGetUpload.Service/wiki
+    -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>lib/Assembly-CSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />

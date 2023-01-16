@@ -31,9 +31,12 @@ namespace LogRngCalls
         ** PushRandomState
         ** PopRandomState
         */
+
+        static Plugin instance;
+
         private void Awake()
         {
-            UnityRandomPatches.plugin = this;
+            instance = this;
             var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll();
             Logger.LogInfo("ohai");
@@ -52,19 +55,17 @@ namespace LogRngCalls
         [HarmonyPatch(typeof(UnityEngine.Random))]
         private static class UnityRandomPatches
         {
-            public static Plugin plugin;
-
             [HarmonyPostfix]
             [HarmonyPatch("InitState")]
-            static void InitStatePost(int seed) { plugin.LogRngCall(); }
+            static void InitStatePost(int seed) { instance.LogRngCall(); }
 
             [HarmonyPostfix]
             [HarmonyPatch("Range", new Type[] { typeof(float), typeof(float) })]
-            static void FloatRangePost(float min, float max, float __result) { plugin.LogRngCall(); }
+            static void FloatRangePost(float min, float max, float __result) { instance.LogRngCall(); }
 
             [HarmonyPostfix]
             [HarmonyPatch("Range", new Type[] { typeof(int), typeof(int) })]
-            static void IntRangePost(int min, int max, int __result) { plugin.LogRngCall(); }
+            static void IntRangePost(int min, int max, int __result) { instance.LogRngCall(); }
 
             //NB: UnityEngine.Random.State looks like this:
             /*
@@ -86,14 +87,14 @@ namespace LogRngCalls
             */
             [HarmonyPostfix]
             [HarmonyPatch("state", MethodType.Getter)]
-            static void GetStatePost(UnityEngine.Random.State __result) { plugin.LogRngCall(); }
+            static void GetStatePost(UnityEngine.Random.State __result) { instance.LogRngCall(); }
             [HarmonyPostfix]
             [HarmonyPatch("state", MethodType.Setter)]
-            static void SetStatePost(UnityEngine.Random.State value) { plugin.LogRngCall(); }
+            static void SetStatePost(UnityEngine.Random.State value) { instance.LogRngCall(); }
 
             [HarmonyPostfix]
             [HarmonyPatch("value", MethodType.Getter)]
-            static void GetValuePost(float __result) { plugin.LogRngCall(); }
+            static void GetValuePost(float __result) { instance.LogRngCall(); }
 
         }
 

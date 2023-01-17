@@ -34,6 +34,8 @@ namespace LogRngCalls
 
         static Plugin instance;
 
+        static bool isCurrentlyImportantTime = false;
+
         private void Awake()
         {
             instance = this;
@@ -45,7 +47,9 @@ namespace LogRngCalls
 
         void LogRngCall()
         {
-            Logger.LogInfo(Environment.StackTrace);
+            if(isCurrentlyImportantTime) {
+                Logger.LogInfo(Environment.StackTrace);
+            }
         }
 
 
@@ -98,5 +102,19 @@ namespace LogRngCalls
 
         }
 
+        [HarmonyPatch(typeof(Echodog.SaveManager))]
+        private static class EchoDogSaveManagerPatches
+        {
+            //start logging rng calls after ImportantRandomStart, after it's done its thing
+            [HarmonyPostfix]
+            [HarmonyPatch("ImportantRandomStart")]
+            static void PostImportantStart() { isCurrentlyImportantTime = true; }
+
+            //stop logging rng calls *before* ImportantRandomEnd, since it does rng stuff that we don't want to see
+            [HarmonyPrefix]
+            [HarmonyPatch("ImportantRandomEnd")]
+            static void PostImportantEnd() { isCurrentlyImportantTime = false; }
+
+        }
     }
 }
